@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="tblrDoumi",
-    version="3.9",
+    version="3.10",
     packages=find_packages(),
     install_requires=[
         PySide6,
