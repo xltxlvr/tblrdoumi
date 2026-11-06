@@ -5,7 +5,7 @@ A PySide6 desktop app for visually building LaTeX table code for the
 Edit rows, columns, cells, merges, and borders with the mouse and dialogs,
 and the finished LaTeX code appears instantly in the preview pane on the right.
 
-- **Release**: 3.9.12 (2026-08-08)
+- **Release**: 3.10.3 (2026-08-20)
 - **License**: MIT (this application) — bundled libraries (PySide6/LGPL, openpyxl/MIT)
   are covered by their own licenses.
 - **Languages**: Korean / English, switchable from within the app.
