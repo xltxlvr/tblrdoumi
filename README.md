@@ -4,6 +4,11 @@ A PySide6 desktop app for visually building LaTeX table code for the
 `tabularray` package's `tblr` / `longtblr` / `talltblr` environments.
 Edit rows, columns, cells, merges, and borders with the mouse and dialogs,
 and the finished LaTeX code appears instantly in the preview pane on the right.
+Ready-to-run installers are available for download, so you can use the app
+without setting up Python yourself:
+
+- **Windows**: [Download the installer](https://drive.google.com/file/d/1Cl7mFlCCglPIparzbPl1TaDgJM6YiGxs/view?usp=drive_link)
+- **macOS**: [Download the installer](https://drive.google.com/file/d/1xwYCKApnErLcE-Ukwj_rUf9dQ8CUGysg/view?usp=drive_link)
 
 - **Release**: 3.10.3 (2026-08-20)
 - **License**: MIT (this application) — bundled libraries (PySide6/LGPL, openpyxl/MIT)
