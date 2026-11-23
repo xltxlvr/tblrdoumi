@@ -9,6 +9,13 @@ without setting up Python yourself:
 
 - **Windows**: [Download the installer](https://drive.google.com/file/d/1Cl7mFlCCglPIparzbPl1TaDgJM6YiGxs/view?usp=drive_link)
 - **macOS**: [Download the installer](https://drive.google.com/file/d/1xwYCKApnErLcE-Ukwj_rUf9dQ8CUGysg/view?usp=drive_link)
+  — The macOS version is not code-signed, so Gatekeeper may refuse to open it.
+  If that happens, remove the quarantine attribute from the downloaded file or
+  installed app in Terminal, then open it again:
+
+  ```bash
+  xattr -dr com.apple.quarantine /path/to/downloaded-or-installed-item
+  ```
 
 - **Release**: 3.10.3 (2026-08-20)
 - **License**: MIT (this application) — bundled libraries (PySide6/LGPL, openpyxl/MIT)

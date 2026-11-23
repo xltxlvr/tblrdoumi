@@ -9,6 +9,13 @@ Python을 직접 설치하지 않아도 앱을 사용할 수 있습니다.
 
 - **Windows**: [설치 프로그램 다운로드](https://drive.google.com/file/d/1Cl7mFlCCglPIparzbPl1TaDgJM6YiGxs/view?usp=drive_link)
 - **macOS**: [설치 프로그램 다운로드](https://drive.google.com/file/d/1xwYCKApnErLcE-Ukwj_rUf9dQ8CUGysg/view?usp=drive_link)
+  — macOS 버전은 코드 서명이 되어 있지 않아 Gatekeeper가 실행을 막을 수 있습니다.
+  이 경우 터미널에서 내려받은 파일 또는 설치된 앱의 quarantine 속성을 제거한 뒤
+  다시 실행하세요.
+
+  ```bash
+  xattr -dr com.apple.quarantine /path/to/downloaded-or-installed-item
+  ```
 
 - **릴리스**: 3.10.3 (2026-08-20)
 - **라이선스**: MIT (이 애플리케이션) — 함께 사용되는 라이브러리(PySide6/LGPL, openpyxl/MIT)는
