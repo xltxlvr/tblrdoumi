@@ -17,7 +17,7 @@ Python을 직접 설치하지 않아도 앱을 사용할 수 있습니다.
   xattr -dr com.apple.quarantine /path/to/downloaded-or-installed-item
   ```
 
-- **릴리스**: 3.10.3 (2026-08-20)
+- **릴리스**: 3.10.4 (2026-11-27)
 - **라이선스**: MIT (이 애플리케이션) — 함께 사용되는 라이브러리(PySide6/LGPL, openpyxl/MIT)는
   각각의 라이선스를 따릅니다.
 - **언어**: 한국어 / 영어, 앱 안에서 전환할 수 있습니다.

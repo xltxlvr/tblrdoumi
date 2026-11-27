@@ -17,7 +17,7 @@ without setting up Python yourself:
   xattr -dr com.apple.quarantine /path/to/downloaded-or-installed-item
   ```
 
-- **Release**: 3.10.3 (2026-08-20)
+- **Release**: 3.10.4 (2026-11-27)
 - **License**: MIT (this application) — bundled libraries (PySide6/LGPL, openpyxl/MIT)
   are covered by their own licenses.
 - **Languages**: Korean / English, switchable from within the app.
