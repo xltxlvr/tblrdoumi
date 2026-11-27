@@ -3039,6 +3039,7 @@ class TblrGenerator(QMainWindow):
             json.dump(data, f, ensure_ascii=False, indent=2)
 
     def load_table(self, filename):
+        self._replace_undo_stack = None
         # 1. 파일 세팅 중 불필요한 경고 메시지가 뜨는 것을 방지하기 위해 먼저 natural로 설정
         self.radio_natural.setChecked(True)
 
@@ -3210,6 +3211,9 @@ class TblrGenerator(QMainWindow):
         open_shortcut = QShortcut(QKeySequence("Ctrl+O"), self)
         open_shortcut.activated.connect(self.load_table_dialog)
 
+        # Ctrl+Z (macOS: ⌘Z) → 직전 '모두 바꾸기' 되돌리기
+        QShortcut(QKeySequence(QKeySequence.StandardKey.Undo), self).activated.connect(self.undo_replace_all)
+
         # F12 => colspec 편집
         QShortcut(QKeySequence("F12"), self).activated.connect(self.open_colspec_dialog)
 
@@ -3242,6 +3246,7 @@ class TblrGenerator(QMainWindow):
 
             replace_count = 0
             modified_cells = 0
+            changes = []  # (row, col, 치환 전 텍스트, 치환 후 텍스트) - 되돌리기용
 
             # 2. 테이블 순회 및 치환
             for r in range(self.table.rowCount()):
@@ -3262,15 +3267,52 @@ class TblrGenerator(QMainWindow):
                         
                         if count > 0:
                             item.setText(new_text)
+                            changes.append((r, c, original_text, new_text))
                             replace_count += count
                             modified_cells += 1
 
             # 3. 결과 안내
             if modified_cells > 0:
+                self._replace_undo_stack = changes
                 QMessageBox.information(self, tr("find.replace_done_title"), tr("find.replace_done_table_body", modified=modified_cells, count=replace_count))
             else:
                 QMessageBox.information(self, tr("find.no_result_title"), tr("find.no_result_table_body", text=target_text))
 
+
+    def undo_replace_all(self):
+        """직전 '모두 바꾸기'를 되돌립니다 (Ctrl+Z / ⌘Z)."""
+        # 텍스트 입력 위젯에 포커스가 있으면 그 위젯 고유의 undo를 우선합니다.
+        fw = self.focusWidget()
+        if isinstance(fw, (QLineEdit, QTextEdit, QPlainTextEdit)):
+            fw.undo()
+            return
+
+        changes = getattr(self, "_replace_undo_stack", None)
+        if not changes:
+            return
+        self._replace_undo_stack = None
+
+        restored = 0
+        skipped = 0
+        self.table.blockSignals(True)
+        try:
+            for r, c, old_text, new_text in changes:
+                item = (self.table.item(r, c)
+                        if r < self.table.rowCount() and c < self.table.columnCount()
+                        else None)
+                # 바꾼 뒤에 사용자가 다시 고친 셀은 건드리지 않습니다.
+                if item is not None and item.text() == new_text:
+                    item.setText(old_text)
+                    restored += 1
+                else:
+                    skipped += 1
+        finally:
+            self.table.blockSignals(False)
+        self.generate_latex()
+
+        if skipped:
+            QMessageBox.information(self, tr("find.undo_title"),
+                                    tr("find.undo_partial_body", restored=restored, skipped=skipped))
 
     def find_text(self):
         text, ok = QInputDialog.getText(self, tr("find.table_dialog_title"), tr("find.search_label"))
@@ -3397,23 +3439,41 @@ class TblrGenerator(QMainWindow):
     def replace_in_text_widget(self, widget):
         """넘겨받은 텍스트 위젯에서 텍스트를 모두 찾아 바꿉니다."""
         dialog = ReplaceDialog(self)
-        
+
         if dialog.exec():
             widget.setFocus()
-            target_text, replace_text = dialog.get_texts()
+            target_text, replace_text, is_case_sensitive, is_regex = dialog.get_data()
 
             if not target_text:
+                QMessageBox.warning(self, tr("find.input_error_title"), tr("find.input_error_body"))
+                return
+
+            flags = 0 if is_case_sensitive else re.IGNORECASE
+            pattern_str = target_text if is_regex else re.escape(target_text)
+            try:
+                pattern = re.compile(pattern_str, flags)
+            except re.error as e:
+                QMessageBox.warning(self, tr("find.regex_error_title"), tr("find.regex_error_body", err=str(e)))
                 return
 
             full_text = widget.toPlainText()
-            
-            if target_text in full_text:
-                replace_count = full_text.count(target_text)
-                new_text = full_text.replace(target_text, replace_text)
-                
-                # 위젯에 치환된 텍스트 덮어쓰기
-                widget.setPlainText(new_text)
-                
+            # 정규식 모드: \1 등 캡처 그룹 허용 / 일반 모드: 바꿀 내용을 리터럴로 취급
+            repl = replace_text if is_regex else (lambda m: replace_text)
+            try:
+                new_text, replace_count = pattern.subn(repl, full_text)
+            except (re.error, IndexError) as e:
+                QMessageBox.warning(self, tr("find.regex_error_title"), tr("find.regex_error_body", err=str(e)))
+                return
+
+            if replace_count > 0:
+                # setPlainText()는 위젯의 undo 기록을 지우므로,
+                # 하나의 편집 블록으로 교체하여 Ctrl+Z로 되돌릴 수 있게 합니다.
+                cursor = widget.textCursor()
+                cursor.beginEditBlock()
+                cursor.select(QTextCursor.SelectionType.Document)
+                cursor.insertText(new_text)
+                cursor.endEditBlock()
+
                 QMessageBox.information(self, tr("find.replace_done_title"), tr("find.replace_done_editor_body", count=replace_count))
             else:
                 QMessageBox.information(self, tr("find.no_result_title"), tr("find.no_result_doc_body", text=target_text))
