@@ -415,7 +415,7 @@ register("ctx.line_format_menu", "괘선 설정 (Line Format) ▶", "Line Format
 # --------------------------------------------------------------------------
 register("help.title", "도움말", "Help")
 
-register("help.mac_text", f"""tblr Doumi, Release {VERSION} (2026-08-10)
+register("help.mac_text", f"""tblr Doumi, Release {VERSION} (2026-11-27)
         Nova de Hi, 2026. MIT License.
         with Python3 and PySide6(LPPL)
 
@@ -454,7 +454,7 @@ register("help.mac_text", f"""tblr Doumi, Release {VERSION} (2026-08-10)
 
     * F9: 템플릿 선택, 추가
     """,
-f"""tblr Doumi, Release {VERSION} (2026-08-10)
+f"""tblr Doumi, Release {VERSION} (2026-11-27)
         Nova de Hi, 2026. MIT License.
         with Python3 and PySide6(LPPL)
 
@@ -494,7 +494,7 @@ f"""tblr Doumi, Release {VERSION} (2026-08-10)
     * F9: Select/add template
     """)
 
-register("help.win_text", f"""tblr Doumi, Release {VERSION} (2026-08-10)
+register("help.win_text", f"""tblr Doumi, Release {VERSION} (2026-11-27)
         Nova de Hi, 2026. MIT License.
         with Python3 and PySide6(LPPL)
 
@@ -534,7 +534,7 @@ register("help.win_text", f"""tblr Doumi, Release {VERSION} (2026-08-10)
 
     * F9: 템플릿 설정, 추가
     """,
-f"""tblr Doumi, Release {VERSION} (2026-08-10)
+f"""tblr Doumi, Release {VERSION} (2026-11-27)
         Nova de Hi, 2026. MIT License.
         with Python3 and PySide6(LPPL)
 
